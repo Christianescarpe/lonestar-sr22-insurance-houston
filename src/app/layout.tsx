@@ -17,12 +17,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://lonestar-sr22-insurance.com'),
+  metadataBase: new URL('https://lonestar-sr22-insurance-houston.vercel.app'),
   title: {
     default: `${siteData.companyName} | Cheap Quotes & Requirements`,
     template: `%s | ${siteData.companyName}`
   },
   description: 'Fast, cheap SR22 insurance and electronic certificate filing to PennDOT. Call +1 (267) 310-0435 for immediate driver license reinstatement.',
+  verification: {
+    google: 'i5UKAo2SFZEKiktsmM4x0IKmRFNrMUBC5TNsq4RhzQQ',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: '/images/logo.png',
     apple: '/images/logo.png'

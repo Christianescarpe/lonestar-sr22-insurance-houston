@@ -44,3 +44,5 @@ next-env.d.ts
 sheet_*.csv
 sheet_content.csv
 sheet_htmlview.html
+
+.vercel
