@@ -16,8 +16,14 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '') ||
+  'https://sr22insurancehoustontx.site'
+).replace(/\/+$/, '');
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://lonestar-sr22-insurance-houston.vercel.app'),
+  metadataBase: new URL(siteUrl),
   title: {
     default: `${siteData.companyName} | Cheap Quotes & Requirements`,
     template: `%s | ${siteData.companyName}`
