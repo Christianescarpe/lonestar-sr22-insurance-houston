@@ -9,7 +9,15 @@ import PricingCards from '@/components/PricingCards';
 import TestimonialSection from '@/components/TestimonialSection';
 import LatestNewsSection from '@/components/LatestNewsSection';
 import LocationsGrid from '@/components/LocationsGrid';
+import JsonLd from '@/components/JsonLd';
 import siteData from '@/data/siteData.json';
+import {
+  SITE_URL,
+  getCanonicalUrl,
+  getBreadcrumbSchema,
+  getArticleSchema,
+  getFaqSchema
+} from '@/lib/seo';
 
 interface PageItem {
   pageName: string;
@@ -60,9 +68,44 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const title = page.seoTitle || page.title || page.pageName;
+  const description = page.metaDesc || '';
+  const canonicalPath = `/${page.slug}`;
+  const isBlog = page.pageType === 'blog';
+  const pageImage = page.image
+    ? page.image.startsWith('http')
+      ? page.image
+      : `${SITE_URL}${page.image}`
+    : `${SITE_URL}/images/insurance-agent-reviewing-car-coverage-with-custom-2026-01-08-07-32-47-utc.webp`;
+
   return {
-    title: page.seoTitle || page.title || page.pageName,
-    description: page.metaDesc || ''
+    title,
+    description,
+    alternates: {
+      canonical: canonicalPath,
+    },
+    openGraph: {
+      title,
+      description,
+      url: getCanonicalUrl(canonicalPath),
+      siteName: siteData.companyName,
+      locale: 'en_US',
+      type: isBlog ? 'article' : 'website',
+      images: [
+        {
+          url: pageImage,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [pageImage],
+    },
   };
 }
 
@@ -79,19 +122,53 @@ export default async function DynamicPage({ params }: Props) {
   const isBlog = page.pageType === 'blog';
 
   let badge = 'SR22 FILING & DRIVER RESTORATION';
+  let categoryName = 'Services';
+  let categoryUrl = '/';
+
   if (isLocation) {
     badge = `PENNSYLVANIA LOCAL FILING • ${page.pageName.replace('SR22 Insurance ', '')}`;
+    categoryName = 'Pennsylvania Locations';
+    categoryUrl = '/';
   } else if (isService) {
     badge = 'SPECIALIZED SR22 COVERAGE OPTION';
+    categoryName = 'SR-22 Services';
+    categoryUrl = '/';
   } else if (isBlog) {
     badge = 'PENN-DOT DRIVER GUIDE & ADVICE';
+    categoryName = 'Driver Guides & Blogs';
+    categoryUrl = '/blogs';
   }
 
   const firstSection = page.sections && page.sections.length > 0 ? page.sections[0] : null;
   const remainingSections = page.sections && page.sections.length > 1 ? page.sections.slice(1) : [];
 
+  // Breadcrumbs Schema
+  const breadcrumbsSchema = getBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: categoryName, url: categoryUrl },
+    { name: page.pageName || page.title, url: `/${page.slug}` }
+  ]);
+
+  // Article Schema for blogs
+  const articleSchema = isBlog
+    ? getArticleSchema({
+        title: page.title || page.pageName,
+        description: page.metaDesc || '',
+        url: `/${page.slug}`,
+        image: page.image
+      })
+    : null;
+
+  // FAQ Schema if page has FAQs
+  const faqSection = page.sections?.find((s) => s.isFaq || (s.faqs && s.faqs.length > 0));
+  const faqSchema = faqSection?.faqs ? getFaqSchema(faqSection.faqs) : null;
+
   return (
     <div className="flex flex-col">
+      <JsonLd data={breadcrumbsSchema} />
+      {articleSchema && <JsonLd data={articleSchema} />}
+      {faqSchema && <JsonLd data={faqSchema} />}
+
       {/* 1. Hero Section */}
       <HeroSection
         title={page.heroTitle || page.title || page.pageName}

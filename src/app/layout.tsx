@@ -4,7 +4,9 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FloatingCallButton from '@/components/FloatingCallButton';
+import JsonLd from '@/components/JsonLd';
 import siteData from '@/data/siteData.json';
+import { SITE_URL, getOrganizationSchema } from '@/lib/seo';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -16,19 +18,16 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '') ||
-  'https://sr22insurancehoustontx.site'
-).replace(/\/+$/, '');
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${siteData.companyName} | Cheap Quotes & Requirements`,
-    template: `%s | ${siteData.companyName}`
+    template: '%s'
   },
   description: 'Fast, cheap SR22 insurance and electronic certificate filing to PennDOT. Call +1 (267) 310-0435 for immediate driver license reinstatement.',
+  alternates: {
+    canonical: '/',
+  },
   verification: {
     google: 'i5UKAo2SFZEKiktsmM4x0IKmRFNrMUBC5TNsq4RhzQQ',
   },
@@ -43,6 +42,28 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  openGraph: {
+    title: `${siteData.companyName} | Cheap Quotes & Requirements`,
+    description: 'Fast, cheap SR22 insurance and electronic certificate filing to PennDOT. Call +1 (267) 310-0435 for immediate driver license reinstatement.',
+    url: SITE_URL,
+    siteName: siteData.companyName,
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: `${SITE_URL}/images/logo.png`,
+        width: 800,
+        height: 600,
+        alt: siteData.companyName,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${siteData.companyName} | Cheap Quotes & Requirements`,
+    description: 'Fast, cheap SR22 insurance and electronic certificate filing to PennDOT. Call +1 (267) 310-0435.',
+    images: [`${SITE_URL}/images/logo.png`],
+  },
   icons: {
     icon: '/images/logo.png',
     apple: '/images/logo.png'
@@ -54,8 +75,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const organizationSchema = getOrganizationSchema();
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth`}>
+      <head>
+        <JsonLd data={organizationSchema} />
+      </head>
       <body className="min-h-full flex flex-col bg-white text-slate-800 antialiased selection:bg-red-500 selection:text-white">
         <Navbar />
         <main className="flex-1">

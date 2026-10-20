@@ -2,13 +2,40 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, BookOpen, ShieldCheck, Phone } from 'lucide-react';
+import { ArrowRight, BookOpen, Phone } from 'lucide-react';
 import siteData from '@/data/siteData.json';
 import LocationsGrid from '@/components/LocationsGrid';
+import JsonLd from '@/components/JsonLd';
+import { SITE_URL, getBreadcrumbSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'SR22 Insurance Blogs & Pennsylvania Driver Guides | LoneStar SR22 Insurance Houston',
-  description: 'Read the latest guides on Pennsylvania SR-22 requirements, PennDOT reinstatement, DL-123 forms, and affordable high-risk auto insurance.'
+  description: 'Read the latest guides on Pennsylvania SR-22 requirements, PennDOT reinstatement, DL-123 forms, and affordable high-risk auto insurance.',
+  alternates: {
+    canonical: '/blogs',
+  },
+  openGraph: {
+    title: 'SR22 Insurance Blogs & Pennsylvania Driver Guides | LoneStar SR22 Insurance Houston',
+    description: 'Read the latest guides on Pennsylvania SR-22 requirements, PennDOT reinstatement, DL-123 forms, and affordable high-risk auto insurance.',
+    url: `${SITE_URL}/blogs`,
+    siteName: siteData.companyName,
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: `${SITE_URL}/images/car-insurance-concept-toy-car-covered-by-umbrella-2026-03-26-23-19-45-utc.webp`,
+        width: 1200,
+        height: 630,
+        alt: 'SR22 Insurance Blogs & Pennsylvania Driver Guides',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SR22 Insurance Blogs & Pennsylvania Driver Guides',
+    description: 'Read the latest guides on Pennsylvania SR-22 requirements, PennDOT reinstatement, DL-123 forms, and affordable high-risk auto insurance.',
+    images: [`${SITE_URL}/images/car-insurance-concept-toy-car-covered-by-umbrella-2026-03-26-23-19-45-utc.webp`],
+  },
 };
 
 const blogImages = [
@@ -25,8 +52,15 @@ const blogImages = [
 ];
 
 export default function BlogsPage() {
+  const breadcrumbs = getBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Blogs & Driver Guides', url: '/blogs' }
+  ]);
+
   return (
     <div className="flex flex-col">
+      <JsonLd data={breadcrumbs} />
+
       {/* Header Banner */}
       <section className="bg-gradient-to-b from-slate-50 via-white to-slate-50 py-16 border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

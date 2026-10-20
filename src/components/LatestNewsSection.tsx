@@ -27,7 +27,7 @@ export default function LatestNewsSection() {
             </h2>
           </div>
           <Link
-            href={`/${siteData.blogPosts[0].slug}`}
+            href="/blogs"
             className="inline-flex items-center gap-2 font-bold text-sm text-[#0e2a47] hover:text-[#dc2626] transition-colors"
           >
             <span>View All Guides</span>

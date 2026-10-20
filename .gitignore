@@ -46,3 +46,8 @@ sheet_content.csv
 sheet_htmlview.html
 
 .vercel
+
+# backup and audit
+_backup_seo/
+scripts/audit.js
+
